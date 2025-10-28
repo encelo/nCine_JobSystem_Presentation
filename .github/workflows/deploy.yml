@@ -1,0 +1,70 @@
+name: Deploy pages
+
+env:
+  EXPORT_FILENAME: nCine_JobSystem
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Setup @antfu/ni
+        run: npm i -g @antfu/ni
+
+      - name: Install dependencies
+        run: |
+          npm install --package-lock-only
+          npm install -D playwright-chromium
+          nci
+
+      - name: Build
+        run: |
+          nr build --base /${{github.event.repository.name}}/
+          mkdir -p dist/img
+          cp -p img/cover.png dist/img/cover.png # does not get copied otherwise
+
+      - name: Export
+        run: |
+          nr export --dark
+          mv ${EXPORT_FILENAME}.pdf dist/
+          nr export
+          mv ${EXPORT_FILENAME}.pdf dist/${EXPORT_FILENAME}_light.pdf
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,30 @@
+figure {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+figure figcaption {
+  font-style: italic;
+  font-size: small;
+  text-align: center;
+}
+
+figure figcaption.left {
+  text-align: left;
+}
+
+figcaption {
+  font-style: italic;
+  font-size: small;
+  text-align: center;
+}
+
+figcaption.left {
+  text-align: left;
+}
