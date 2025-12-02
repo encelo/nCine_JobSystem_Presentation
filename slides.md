@@ -3983,7 +3983,7 @@ Android Toybox multicall shell commands do not support <code>ls -v</code>.
 
 ---
 
-## The nCine's `CpuTopology` Class on Windows and Mac
+## The nCine's `CpuTopology` Class on Windows and macOS
 
 <br/>
 
@@ -7162,7 +7162,7 @@ The fake sprite <code>update()</code> method (<a href="https://github.com/nCine/
 
 </div>
 
-- Let's compare the ECS model with a traditional tree of pointer-linked objects (via `parent`)
+- Let's compare the ECS model with a traditional tree of objects (_pointer chasing_ via `parent`)
 - Each `Sprite` object lives somewhere in memory, `sprites` is an array of smart pointers
   - Though in practice, the OS allocator may still allocate them close together
 
@@ -7308,7 +7308,7 @@ Creating a balanced tree of entities (<a href="https://github.com/nCine/nCine/bl
 
 ---
 
-## The Problem At Hand
+## The Problem at Hand
 
 - In the object-oriented version, we traverse the tree from the root downward
   - We always transform a parent first, and only then its children
@@ -8213,10 +8213,13 @@ flowchart TD
 
 <br/>
 
+<div style="font-size: medium;">
+
 - [_Be Engineering Insights: Benaphores_](https://www.haiku-os.org/legacy-docs/benewsletter/Issue1-26.html#Engineering1-26), Benoit Schillings, 1996, Issue 1-26
 - [_Fuss, Futexes and Furwocks: Fast Userlevel Locking in Linux_](https://www.kernel.org/doc/ols/2002/ols2002-pages-479-495.pdf), H. Franke, R. Russell, M. Kirkwood, 2002
 - [_Implementing Condition Variables with Semaphores_](http://birrell.org/andrew/papers/ImplementingCVs.pdfv), Andrew D. Birrell, 2003
 - [_Futexes Are Tricky_](https://dept-info.labri.fr/~denis/Enseignement/2008-IR/Articles/01-futex.pdf), Ulrich Drepper, 2004
+- [_What Every Programmer Should Know About Memory_](https://people.freebsd.org/~lstewart/articles/cpumemory.pdf), Ulrich Drepper, 2007
 - Job System 2.0: Lock-Free Work Stealing, Stefan Reinalter, 2015, Molecular Musings Blog
   - [1: Basics](https://blog.molecular-matters.com/2015/08/24/job-system-2-0-lock-free-work-stealing-part-1-basics/), [2: A specialized allocator](https://blog.molecular-matters.com/2015/09/08/job-system-2-0-lock-free-work-stealing-part-2-a-specialized-allocator/), [3: Going lock-free](https://blog.molecular-matters.com/2015/09/25/job-system-2-0-lock-free-work-stealing-part-3-going-lock-free/), [4: parallel_for](https://blog.molecular-matters.com/2015/11/09/job-system-2-0-lock-free-work-stealing-part-4-parallel_for/), [5: Dependencies](https://blog.molecular-matters.com/2016/04/04/job-system-2-0-lock-free-work-stealing-part-5-dependencies/)
 - [_The Little Book of Semaphores_](https://greenteapress.com/wp/semaphores/), Allen B. Downey, 2016
@@ -8226,3 +8229,5 @@ flowchart TD
 - [_Lockless Programming Considerations for Xbox 360 and Microsoft Windows_](https://learn.microsoft.com/en-us/windows/win32/dxtecharts/lockless-programming), Microsoft Docs, 2020
 - [_Preshing on Programming_](https://preshing.com/), Jeff Preshing, n.d.
 - [_On the Complexity of Synchronization: Memory Barriers, Locks, and Scalability_](https://www.deep-kondah.com/on-the-complexity-of-synchronization-memory-barriers-locks-and-scalability/), Mouad Kondah, 2025
+
+</div>
