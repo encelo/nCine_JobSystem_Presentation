@@ -134,7 +134,7 @@ layout: section
 
 <div class="col-span-3">
 
-- A portmanteau of "Encelo" and "engine" 😅
+- A portmanteau of "Encelo" and "engine" (like Linux 🐧)
 - Cross-platform 2D framework for games, tools, and prototypes
   - PC (Linux, Windows, macOS), Android, Web (Emscripten)
 - Distributed as a static or dynamic library with a clean API and callback system
@@ -333,7 +333,7 @@ Example of a modern job system, on an octa-core machine
 <br/>
 <v-click>
 <div class="absolute left-2/3 top-5/12">
-<Admonition type="tip">
+<Admonition type="info">
 Don't worry, we will explore each layer step by step, with diagrams and simple code examples.
 </Admonition>
 </div>
@@ -353,7 +353,7 @@ layout: section
 
 - A **core** is a physical processing unit within the CPU
 - A **thread** is a logical unit of execution that runs on a single core
-  - They share the same virtual address space (they see the same memory)
+  - All threads share the same virtual address space (they see the same memory)
   - They are "lightweight process" that live in the same kernel process
   - **Processes**, on the other hand, have isolated memory spaces
 - Why do they matter?
@@ -510,7 +510,7 @@ Joining and detaching a Windows thread (<a href="https://github.com/nCine/nCine/
 ## ncTracer (2019)
 
 - Raytracing and path tracing are what we call "_embarrassingly parallel_" problems
-  - You can simply divide the final image into tiles and assign each to a different thread
+  - You can simply divide the rendered image into tiles and assign each to a different thread
 - **ncTracer** is a straightforward CPU-only, multi-threaded path tracer built on my <a href="https://github.com/encelo/pmTracer">pmTracer</a> library
 - 📜 Reference: <a href="https://web.archive.org/web/20210506181127/http://www.raytracegroundup.com/">_Ray Tracing from the Ground Up_</a>, Kevin Suffern, 2007
 
@@ -1662,7 +1662,7 @@ We use condition variables to wait until the array has space or data before prod
 </figcaption>
 
 - Multiple threads can check these conditions, because waiting on a CV automatically releases the mutex
-- A thread that wakes up automatically reacquires the mutex and must unlock it when finished
+- A signalled thread wakes up and competes to reacquire the mutex before proceeding
 
 ---
 
@@ -1828,9 +1828,21 @@ Signalling a semaphore implemented with a condition variable
 
 - 📜 Reference: [_The Little Book of Semaphores_](https://greenteapress.com/wp/semaphores/), Allen B. Downey, 2016, pp. 261-267
 
-<Admonition type="tip">
-We will explore later another way to implement semaphores.
+<div grid="~ cols-2 gap-x-5">
+
+<div>
+<Admonition type="warning">
+Without the while loop, it would be possible for a thread to signal and then run around and catch its own signal.
 </Admonition>
+</div>
+
+<div>
+<Admonition type="tip">
+We will see later another way to implement semaphores.
+</Admonition>
+</div>
+
+</div>
 
 ---
 layout: section
@@ -1961,7 +1973,7 @@ The variable equals 2
 
 - We saw the increment instruction, but a variable can also be decremented atomically
 - Bitwise _AND_, _OR_, _XOR_ operations can also be performed atomically
-  - Useful for manipualting bit flags (test, set, clear)
+  - Useful for manipulating bit flags (test, set, clear)
 - But the king of all instructions is [Compare-and-swap](https://en.wikipedia.org/wiki/Compare-and-swap) (sometimes Compare-and-exchange)
   - All the others can be implemented in terms of it
 
@@ -1974,11 +1986,9 @@ The variable equals 2
 // Pseudo implementation of the CAS instruction logic
 int CAS(int *dest, int oldValue, int newValue)
 {
-    ATOMIC();
     const int oldDestValue = *dest;
     if (oldDestValue == oldValue)
         *dest = newValue;
-    END_ATOMIC();
     return oldDestValue;
 }
 ```
@@ -2947,7 +2957,7 @@ stateDiagram-v2
 
 - The parallel job we created will spawn additional jobs autonomously
   - Each will process a slice of the entire buffer
-  - The splitter policy classes regulate slice creation (number of elements or data size)
+  - The splitter [policy classes](https://en.wikipedia.org/wiki/Modern_C%2B%2B_Design#Policy-based_design) regulate slice creation (number of elements or data size)
   - It only works as a parallel version of a `for` loop over array elements
 
 ---
@@ -3256,7 +3266,7 @@ xychart
 - When the number of jobs increases, the total time goes down, up to a certain point
 - The single thread tests run on a special serial job system that has no synchronization
 - When using all logical cores, speedup decreases and $\sigma$ increases (contention on shared resources)
-  - $\sigma$ is the standard deviation, a measure of the amount of variation of the values arout its mean
+  - $\sigma$ is the standard deviation, a measure of the amount of variation of the values around its mean
 
 ---
 
@@ -3383,7 +3393,7 @@ config:
         showDataLabel: true
 ---
 xychart
-    title "Relative Percentage"
+    title "Relative Percentage (1024 it x 1024 jobs)"
     x-axis "Num. Threads" [1, 2, 4, 8, 16]
     y-axis "Relative %" 0 --> 100
     bar [100, 51.44, 26.58, 14.11, 11.27]
@@ -3623,11 +3633,11 @@ config:
         showDataLabel: true
 ---
 xychart
-    title "Mac Mini M1"
+    title "Xiaomi 14"
     x-axis "Num. Threads" [1, 2, 4, 8]
     y-axis "Milliseconds" 0 --> 12.5
-    bar [7.624, 4.018, 2.140, 1.799]
-    line [7.624, 3.812, 1.906, 0.953]
+    bar [11.612, 7.104, 3.989, 2.886]
+    line [11.612, 5.806, 2.903, 1.4515]
 ```
 
 <figcaption>Repetitions: 128, Iterations: 1024, Jobs: 1024</figcaption>
@@ -3644,11 +3654,11 @@ config:
         showDataLabel: true
 ---
 xychart
-    title "Xiaomi Mi 14"
+    title "Mac Mini (2020)"
     x-axis "Num. Threads" [1, 2, 4, 8]
     y-axis "Milliseconds" 0 --> 12.5
-    bar [11.612, 7.104, 3.989, 2.886]
-    line [11.612, 5.806, 2.903, 1.4515]
+    bar [7.624, 4.018, 2.140, 1.799]
+    line [7.624, 3.812, 1.906, 0.953]
 ```
 
 <figcaption>Repetitions: 128, Iterations: 1024, Jobs: 1024</figcaption>
@@ -3657,11 +3667,11 @@ xychart
 
 </div>
 
-- **Alurin**: Intel i5-1235U, Alder Lake-U, 2P + 8E (`intel_pstate`, `performance` governor)
+- **Alurin Flex Advance**: Intel i5-1235U, Alder Lake-U, 2P + 8E (`intel_pstate`, `performance` governor)
   - 2x Golden Cove @4.4GHz (2C/4T) + 8x Gracemont @3.3GHz
-- **Mi 14**: SD 8 Gen 3, 1 Prime + 3P + 2P + 2E (Settings -> Battery -> Performance)
+- **Xiaomi 14**: SD 8 Gen 3, 1 Prime + 3P + 2P + 2E (Settings -> Battery -> Performance)
   - 1x X4 @3.3 GHz + 3x A720 @3.15 GHz + 2x A720 @2.96 GHz + 2x A520 @2.27 GHz
-- **Mac Mini**: AppleSilicon M1, 4P + 4E, 3.2 GHz
+- **Mac Mini** (2020): AppleSilicon M1, 4P + 4E, 3.2 GHz
   - 4x Firestorm + 4x Icestorm
 
 ---
@@ -3683,7 +3693,7 @@ config:
 ---
 xychart
     title "Single thread performance (ms)"
-    x-axis ["Raspberry", "Mi Notebook", "Alurin", "Mi 14", "ASUS", "Mac Mini"]
+    x-axis ["Raspberry", "Mi Notebook", "Alurin", "Xiaomi 14", "ASUS", "Mac Mini"]
     y-axis "Milliseconds" 0 --> 60
     bar [58.803, 30.641, 12.040, 11.612, 11.523, 7.624]
 ```
@@ -3703,7 +3713,7 @@ config:
 ---
 xychart
     title "4 threads performance (ms)"
-    x-axis ["Raspberry", "Mi Notebook", "Alurin (Projected)", "Mi 14", "ASUS", "Mac Mini"]
+    x-axis ["Raspberry", "Mi Notebook", "Alurin (Projected)", "Xiaomi 14", "ASUS", "Mac Mini"]
     y-axis "Milliseconds" 0 --> 16
     bar [15.544, 8.354, 4.8215, 3.989, 3.288, 2.140]
 ```
@@ -3723,7 +3733,7 @@ config:
 ---
 xychart
     title "Multi-thread performance (ms)"
-    x-axis ["Raspberry", "Mi Notebook", "Alurin", "Mi 14", "ASUS", "Mac Mini"]
+    x-axis ["Raspberry", "Mi Notebook", "Alurin", "Xiaomi 14", "ASUS", "Mac Mini"]
     y-axis "Milliseconds" 0 --> 16
     bar [15.544, 8.354, 1.939, 2.886, 1.378, 1.799]
 ```
@@ -3747,7 +3757,7 @@ config:
 ---
 xychart
     title "Single thread performance (%)"
-    x-axis ["Raspberry", "Mi Notebook", "Alurin", "Mi 14", "ASUS", "Mac Mini"]
+    x-axis ["Raspberry", "Mi Notebook", "Alurin", "Xiaomi 14", "ASUS", "Mac Mini"]
     y-axis "Relative %" 0 --> 100
     bar [100, 52.11, 20.47, 19.75, 19.6, 12.96]
 ```
@@ -3767,7 +3777,7 @@ config:
 ---
 xychart
     title "4 threads performance (%)"
-    x-axis ["Raspberry", "Mi Notebook", "Alurin (Projected)", "Mi 14", "ASUS", "Mac Mini"]
+    x-axis ["Raspberry", "Mi Notebook", "Alurin (Projected)", "Xiaomi 14", "ASUS", "Mac Mini"]
     y-axis "Relative %" 0 --> 100
     bar [100, 53.74, 31.02, 25.66, 21.15, 13.77]
 ```
@@ -3787,7 +3797,7 @@ config:
 ---
 xychart
     title "Multi-thread performance (%)"
-    x-axis ["Raspberry", "Mi Notebook", "Alurin", "Mi 14", "ASUS", "Mac Mini"]
+    x-axis ["Raspberry", "Mi Notebook", "Alurin", "Xiaomi 14", "ASUS", "Mac Mini"]
     y-axis "Relative %" 0 --> 100
     bar [100, 53.74, 12.47, 18.57, 8.86, 11.57]
 ```
@@ -3825,7 +3835,7 @@ layout: section
 
 </v-clicks>
 
-<v-clicks>
+<v-clicks at="-0">
 
 <Admonition type="info">
 We will see later why sorting cores is useful.
@@ -3970,7 +3980,7 @@ houji:/ $ cat $(echo /sys/devices/system/cpu/cpu[0-9]*/cpufreq/cpuinfo_max_freq 
 ```
 
 <figcaption>
-Querying <code>sysfs</code> on the Xiaomi Mi 14.<br/>
+Querying <code>sysfs</code> on the Xiaomi 14.<br/>
 Android Toybox multicall shell commands do not support <code>ls -v</code>.
 </figcaption>
 </figure>
@@ -5104,7 +5114,7 @@ The source view window for the <code>dummyJob()</code> function zone, with the d
 </div>
 
 - The colored percentages come from hardware counters
-  - Instructions Per Cycle, branch mispredictions, and cache misses
+  - Instructions per cycle (IPC), branch mispredictions, and cache misses
 - On the right, colored arrows show the instruction dependencies between registers
 
 ---
@@ -5211,16 +5221,29 @@ Partial code from the beginning of the <code>IJobSystem</code> interface<br/>
 </figcaption>
 </figure>
 
-- The structure occupies 64B when `JobDataSize` is 36B
+<br/>
+<br/>
+<figure>
+
+```cpp
+static_assert(sizeof(Job) == 64,
+    "Job structure size should be exactly one cache line");
+```
+
+<figcaption>
+When <code>JobDataSize</code> is 36 bytes, the <code>Job</code> structure occupies exactly one cache line.<br/>
+(<a href="https://github.com/nCine/nCine/blob/master/src/include/Job.h"><code>src/include/Job.h</code>🔗</a>)
+</figcaption>
+</figure>
 
 </div>
 
 </div>
 
-- It keeps note of the function to run, the parent job, job state, custom user data, continuations
+- It keeps note of the function to run, the parent job, the job state, custom user data, and continuations jobs
 
 <Admonition type="info">
-We will see now in more detail the <code>alignas</code> specifier and later the generation number.
+We will see now in more detail the <code>alignas</code> specifier, and later the generation number.
 </Admonition>
 
 ---
@@ -5367,7 +5390,7 @@ xychart
 ```
 
 <figcaption>
-Interleaved buffer writes with no <code>alignas</code>
+Interleaved buffer writes with no <code>alignas</code> 🐌
 </figcaption>
 </figure>
 </div>
@@ -5389,7 +5412,7 @@ xychart
 ```
 
 <figcaption>
-Interleaved buffer writes with <code>alignas</code>
+Interleaved buffer writes with <code>alignas</code> 🚀
 </figcaption>
 </figure>
 </div>
@@ -5754,17 +5777,17 @@ Microarchitecture Exploration -> Event Count (Fast 🚀)
 ```mermaid{look: 'handDrawn', scale: 0.47}
 graph LR
     subgraph WorkDeque["Work-Stealing Deque"]
-    T["top →"] --> J1("Job A")
+    T["top ➡️"] --> J1("Job A")
     J1 --> J2("Job B")
     J2 --> J3("Job C")
-    J3 --> B["← bottom"]
+    J3 --> B["⬅️ bottom"]
     end
-    Owner["Owner thread (push/pop bottom)"] --> B
-    Thief["Thief thread (steal top)"] --> T
+    Owner{{"Owner (push/pop bottom)"}} --> B
+    Thief{{"Thief (steal top)"}} --> T
 ```
 
 <figcaption>
-The job queue with the available operations
+The double-ended job queue and its available operations
 </figcaption>
 </figure>
 
@@ -6160,7 +6183,7 @@ Constants and methods from the <code>Job</code> structure (<a href="https://gith
 </div>
 
 - Retrieving a job shows how a `JobId` encodes two pieces of information:
-  - The lower 16 bits store the index in the pool (extracted with the mask)
+  - The lower 16 bits store the index in the pool (extracted with a mask)
   - The upper 16 bits store the job's generation counter (extracted with a right shift)
 - A `JobId` is valid only if the job's current generation matches the encoded one
 - This simple check prevents accidental reuse of stale or recycled identifiers
@@ -6263,7 +6286,7 @@ Sequence diagram for the ABA problem example
 
 ```cpp
 
-nctl::AtomicU32 countersAndState; ///< Layout: [ flags:3 | continuation count:13 | unfinished jobs:16 ]
+nctl::AtomicU32 countersAndState; ///< Layout: [ flags:3 | continuations count:13 | unfinished jobs:16 ]
 constexpr uint32_t FLAGS_MASK = ((1u << FLAGS_BITS) - 1u) << FLAGS_SHIFT;
 
 uint16_t Job::incrementContinuationCount()
@@ -6289,7 +6312,7 @@ Some methods of the <code>Job()</code> structure (<a href="https://github.com/nC
 </figure>
 
 - The `countersAndState` field combines several subfields into one atomic 32-bit value
-  - Each operation on flags, continuation count, or unfinished-job count uses atomic read-modify-write
+  - Each operation on flags, continuations count, or unfinished jobs count uses atomic read-modify-write
   - This keeps updates consistent without separate locks or multiple atomics
 
 ---
@@ -6406,7 +6429,7 @@ bool JobSystem::addContinuation(JobId ancestorId,
     continuationAdded = true;
   }
   else
-    ancestorJob->decrementContinuationCount();
+    ancestorJob->decrementContinuationCount(); // rollback
 
   return continuationAdded;
 }
@@ -6499,7 +6522,7 @@ The <code>submit()</code> method of the job system (<a href="https://github.com/
 ```cpp
 bool JobSystem::cancel(JobId jobId)
 {
-  // [Omitted: Checking the id and retrieving the job]
+  // [Omitted: Id checking and job retrieving]
 
   uint32_t oldState = job->countersAndState.load(
     nctl::MemoryModel::RELAXED);
@@ -8005,7 +8028,7 @@ The main thread isn't pinned, so it hops across CPUs each frame.
 <img src="/img/Tracy/Tracy_Entities_Timeline_OldTransform_128k.png" alt="Tracy_Entities_Timeline_OldTransform_128k" />
 <figcaption>
 Tracy timeline with 128k entities (first solution)<br/>
-You can see numerous idle "bubbles" from the introsort call structure.
+You can see numerous idle "bubbles" among workers, and the introsort recursive call structure.
 </figcaption>
 </figure>
 </div>
